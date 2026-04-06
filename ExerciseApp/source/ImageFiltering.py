@@ -132,4 +132,37 @@ def applyMovingAverageFilterWithSeperatedKernels(img, kSize):
     return np.clip(filtered_img, 0, 255).astype(np.uint8)
 
 def run_runtime_evaluation(img):
-    pass
+    kernel_sizes = range(3, 16, 2)  # 3, 5, 7, 9, 11, 13, 15
+    
+    times_convolution = []
+    times_separated = []
+    times_integral = []
+
+    for kSize in kernel_sizes:
+        # --- Faltung ---
+        start = dt.datetime.now()
+        kernel = createMovingAverageKernel(kSize)
+        applyKernelInSpatialDomain(img, kernel)
+        times_convolution.append((dt.datetime.now() - start).total_seconds())
+
+        # --- Separierbare Filter ---
+        start = dt.datetime.now()
+        applyMovingAverageFilterWithSeperatedKernels(img, kSize)
+        times_separated.append((dt.datetime.now() - start).total_seconds())
+
+        # --- Integralbild ---
+        start = dt.datetime.now()
+        applyMovingAverageFilterWithIntegralImage(img, kSize)
+        times_integral.append((dt.datetime.now() - start).total_seconds())
+
+    # --- Plot ---
+    plt.figure()
+    plt.plot(kernel_sizes, times_convolution, label='Faltung')
+    plt.plot(kernel_sizes, times_separated, label='Separierbare Filter')
+    plt.plot(kernel_sizes, times_integral, label='Integralbild')
+    plt.xlabel('Kernelgröße w')
+    plt.ylabel('Zeit (Sekunden)')
+    plt.title('Laufzeitvergleich Moving-Average-Filter')
+    plt.legend()
+    plt.savefig('plot.png')
+    plt.show()

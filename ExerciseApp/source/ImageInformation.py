@@ -8,7 +8,7 @@ import numpy as np
 #           e.g. channel manipulation, filter you already know, drawings on the image etc.
 def myFirstImageManipulation(img):
     result = img.copy()
-    result[:,:,2] = 0 # set the red channel to zero
+    result[:,:,2] = 0 # set the blue channel to zero 
     return result
 
 
